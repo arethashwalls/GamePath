@@ -19,7 +19,7 @@ $(document).ready(function () {
                     genreIds: [5, 4, 25],
                     themes: ['Action', 'Warfare'],
                     themeIds: [1, 39]
-                };    
+                };
             case 'fanciful':
                 return {
                     themes: ['Fantasy', 'Historical', 'Science Fiction'],
@@ -69,27 +69,46 @@ $(document).ready(function () {
     const gameKey = 'f28275b8fb7b306cbb42f124b2e94066';
     const musicKey = 'a3e040df3cd2213704ea57b5d25c8714';
 
-    getGames = (mood) => {}
+    function getGames(mood, property) {
+        const moodTerms = searchTerms(mood);
+        if (moodTerms.hasOwnProperty(`${property}Ids`)) {
+            let gameQueryUrl = '';
+            gameQueryUrl = `https://api-2445582011268.apicast.io/${property}s/`;
+            const ids = property === 'genre' ? moodTerms.genreIds : moodTerms.themeIds;
+            for (let id of ids) {
+                gameQueryUrl += id + ',';
+            }
+            gameQueryUrl = gameQueryUrl.substring(0, gameQueryUrl.length - 1);
+            gameQueryUrl += '?fields=*';
+            const gameEncodedUrl = encodeURIComponent(gameQueryUrl);
+            $.ajax({
+                type: 'GET',
+                contentType: 'application/json',
+                headers: { 'user-key': gameKey, "Accept": "application/json" },
+                url: 'https://corsbridge.herokuapp.com/' + gameEncodedUrl,
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+        else {
+            return false;
+        }
+    }
 
-    const gameQueryUrl = 'https://api-2445582011268.apicast.io/themes/?search=sandbox&fields=name';
-    const gameEncodedUrl = encodeURIComponent(gameQueryUrl);
+    getGames('angry', 'genre')
+
+    // const gameQueryUrl = 'https://api-2445582011268.apicast.io/themes/?search=sandbox&fields=name';
+    // const gameEncodedUrl = encodeURIComponent(gameQueryUrl);
 
     const musicQueryUrl = `http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&artist=cher&api_key=${musicKey}&format=json`;
     const musicEncodedUrl = encodeURIComponent(musicQueryUrl);
 
     $('.mood-buttons').on('click', '.mood-button', () => {
-        
+
     });
 
-    $.ajax({
-        type: 'GET',
-        contentType: 'application/json',
-        headers: { 'user-key': gameKey, "Accept": "application/json" },
-        url: 'https://corsbridge.herokuapp.com/' + gameEncodedUrl,
-        success: function (data) {
-            console.log(data);
-        }
-    });
+
 
     $.ajax({
         type: 'GET',
