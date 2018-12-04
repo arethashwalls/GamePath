@@ -2,9 +2,11 @@ $(document).ready(function () {
     let moods = ['sad', 'angry', 'fanciful', 'excited', 'cheerful', 'spooky', 'suspenseful', 'thoughtfull', 'curious'];
 
     for (let mood of moods) {
-
         $('.mood-buttons').append($('<button>').text(mood).attr({ 'data-mood': mood, 'class': 'mood-button' }));
     }
+
+    const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length )];
+ 
 
     function searchTerms(mood) {
         switch (mood) {
@@ -67,57 +69,76 @@ $(document).ready(function () {
     }
 
     const gameKey = 'f28275b8fb7b306cbb42f124b2e94066';
-    const musicKey = 'a3e040df3cd2213704ea57b5d25c8714';
+    // const musicKey = 'a3e040df3cd2213704ea57b5d25c8714';
 
-    function getGames(mood, property) {
+    function getGameIds(mood, property, cb) {
         const moodTerms = searchTerms(mood);
-        if (moodTerms.hasOwnProperty(`${property}Ids`)) {
-            let gameQueryUrl = '';
-            gameQueryUrl = `https://api-2445582011268.apicast.io/${property}s/`;
-            const ids = property === 'genre' ? moodTerms.genreIds : moodTerms.themeIds;
-            for (let id of ids) {
-                gameQueryUrl += id + ',';
-            }
-            gameQueryUrl = gameQueryUrl.substring(0, gameQueryUrl.length - 1);
-            gameQueryUrl += '?fields=*';
-            const gameEncodedUrl = encodeURIComponent(gameQueryUrl);
-            $.ajax({
-                type: 'GET',
-                contentType: 'application/json',
-                headers: { 'user-key': gameKey, "Accept": "application/json" },
-                url: 'https://corsbridge.herokuapp.com/' + gameEncodedUrl,
-                success: function (data) {
-                    console.log(data);
+        let gameQueryUrl = `https://api-2445582011268.apicast.io/${property}s/`;
+        const ids = property === 'genre' ? moodTerms.genreIds : moodTerms.themeIds;
+        for (let id of ids) {
+            gameQueryUrl += id + ',';
+        }
+        gameQueryUrl = gameQueryUrl.substring(0, gameQueryUrl.length - 1);
+        gameQueryUrl += '?fields=*&filter[rating][gt]=75&order=popularity:desc';
+        const gameEncodedUrl = encodeURIComponent(gameQueryUrl);
+        let gameIds = [];
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            headers: { 'user-key': gameKey, "Accept": "application/json" },
+            url: 'https://corsbridge.herokuapp.com/' + gameEncodedUrl,
+            success: function (data) {
+                for(datum of data) {
+                    for(let i = 0; i < 10; i++) {
+                        gameIds.push(datum.games[i]);
+                    }
                 }
-            });
-        }
-        else {
-            return false;
-        }
+                cb(gameIds)
+            }
+        });
+        return gameIds;
     }
 
-    getGames('angry', 'genre')
+    function getGame(ids) {
+        let id = getRandom(ids);
+        console.log(ids[0]);
+        let gameQueryUrl = `https://api-2445582011268.apicast.io/games/${id}?fields=*`;
+        console.log(gameQueryUrl);
+        const gameEncodedUrl = encodeURIComponent(gameQueryUrl);
+        $.ajax({
+            type: 'GET',
+            contentType: 'application/json',
+            headers: { 'user-key': gameKey, "Accept": "application/json" },
+            url: 'https://corsbridge.herokuapp.com/' + gameEncodedUrl,
+            success: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    getGameIds('angry', 'genre', getGame);
 
     // const gameQueryUrl = 'https://api-2445582011268.apicast.io/themes/?search=sandbox&fields=name';
     // const gameEncodedUrl = encodeURIComponent(gameQueryUrl);
 
-    const musicQueryUrl = `http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&artist=cher&api_key=${musicKey}&format=json`;
-    const musicEncodedUrl = encodeURIComponent(musicQueryUrl);
+    // const musicQueryUrl = `http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&artist=cher&api_key=${musicKey}&format=json`;
+    // const musicEncodedUrl = encodeURIComponent(musicQueryUrl);
 
     $('.mood-buttons').on('click', '.mood-button', () => {
+        const mood = $(this).attr('data-mood');
 
     });
 
 
 
-    $.ajax({
-        type: 'GET',
-        contentType: 'application/json',
-        url: 'https://corsbridge.herokuapp.com/' + musicEncodedUrl,
-        success: function (data) {
-            console.log(data);
-        }
-    })
+    // $.ajax({
+    //     type: 'GET',
+    //     contentType: 'application/json',
+    //     url: 'https://corsbridge.herokuapp.com/' + musicEncodedUrl,
+    //     success: function (data) {
+    //         console.log(data);
+    //     }
+    // })
 
 
 });
