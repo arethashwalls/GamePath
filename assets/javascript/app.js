@@ -66,7 +66,7 @@ $(document).ready(function () {
         constructor(title, summary, platformIds, cover, videoIds) {
             this.title = title;
             this.summary = summary;
-            this.cover = cover;
+            this.cover = `https://images.igdb.com/igdb/image/upload/t_cover_big/${cover.cloudinary_id}.jpg`;
             this.platformIds = platformIds;
             this.videoIds = videoIds;
         }
@@ -77,13 +77,13 @@ $(document).ready(function () {
             }
             gameQueryUrl = gameQueryUrl.substring(0, gameQueryUrl.length - 1);
             gameQueryUrl += '?fields=name';
-            const gameSafeUrl = 'https://corsbridge.herokuapp.com/' + encodeURIComponent(gameQueryUrl);
+            const gameSafeUrl = 'https://corsbridge2.herokuapp.com/' + encodeURIComponent(gameQueryUrl);
             return axios.get(gameSafeUrl, {
                 headers: {
                     'user-key': gameKey,
                     'Accept': 'application/json'
                 }
-            }).then(response => response.data);
+            }).then(response => response.data.map(datum => datum.name));
         }
         get videos() {
             return this.videoIds.map(id => $('<iframe>').attr({
@@ -106,13 +106,15 @@ $(document).ready(function () {
             gameQueryUrl += id + ',';
         });
         gameQueryUrl = gameQueryUrl.substring(0, gameQueryUrl.length - 1);
-        const gameSafeUrl = 'https://corsbridge.herokuapp.com/' + encodeURIComponent(gameQueryUrl);
+        const gameSafeUrl = 'https://corsbridge2.herokuapp.com/' + encodeURIComponent(gameQueryUrl);
         return axios.get(gameSafeUrl, {
             headers: {
                 'user-key': gameKey,
                 'Accept': 'application/json'
             }
-        }).then(response => response.data.map(datum => new Game(datum.name, datum.summary, datum.platforms, datum.cover, datum.videos)));
+        }).then(response => response.data.map(
+            datum => new Game(datum.name, datum.summary, datum.platforms, datum.cover, datum.videos)
+        ));
 
     }
 
@@ -128,28 +130,41 @@ $(document).ready(function () {
 
             ////////////////////////////////////////
             game.platforms.then(platforms => {
+                console.log(platforms);
                 //CODE SPECIFICALLY FOR DISPLAYING PLATFORMS GOES HERE:
                 
                 
                 //////////////////////////////////////////////////////
             });
         });
+        getMusicPromise(mood).then(result => {
+            console.log(result);
+            //CODE FOR DISPLAYING TRACKS GOES HERE:
 
+            
+            ///////////////////////////////////////
+        });
     });
 
-// const musicKey = 'a3e040df3cd2213704ea57b5d25c8714';
-    // const musicQueryUrl = `http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&artist=cher&api_key=${musicKey}&format=json`;
-    // const musicSafeUrl = 'https://corsbridge.herokuapp.com/' + encodeURIComponent(musicQueryUrl);
-    // axios.get(musicSafeUrl).then(response => console.log(response));
+    const musicKey = 'a3e040df3cd2213704ea57b5d25c8714';
 
-    // $.ajax({
-    //     type: 'GET',
-    //     contentType: 'application/json',
-    //     url: 'https://corsbridge.herokuapp.com/' + musicEncodedUrl,
-    //     success: function (data) {
-    //         console.log(data);
-    //     }
-    // })
+    class Track {
+        constructor(title, artist, cover, link) {
+            this.title = title;
+            this.artist = artist;
+            this.cover = cover;
+            this.link = link;
+        }
+    }
 
+    function getMusicPromise(mood) {
+        const musicQueryUrl = `http://ws.audioscrobbler.com/2.0/?method=tag.gettoptracks&tag=${mood}&api_key=${musicKey}&format=json`
+        const musicSafeUrl = 'https://corsbridge.herokuapp.com/' + encodeURIComponent(musicQueryUrl);
+        return track = axios.get(musicSafeUrl).then(response => response.data.tracks.track.map(
+            track => new Track(track.name, track.artist.name, track.image[2]['#text'], track.url)
+        ));
+    }
+
+    getMusicPromise('angry');
 
 });
