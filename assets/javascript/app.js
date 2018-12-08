@@ -126,6 +126,20 @@ $(document).ready(function () {
             console.log(result);
             let game = getRandom(result); 
             //CODE FOR DISPLAYING RESULTS GOES HERE:
+            const gameTitle = game.title;
+            const title = $("<h4>").text("Title: " + gameTitle);
+          
+            const gameCover = game.cover;
+            console.log(game)
+            const cover = $("<img>").attr("src", gameCover);
+            
+            const gameSummary = game.summary;
+            const summary = $("<p>").text("Summary: " + gameSummary);
+                        
+            const gameVideo = game.videoIds;
+            const video = $("<iframe>").attr("src", gameVideo);
+           
+            $("#game-results").prepend(title, cover, summary,video);
 
 
             ////////////////////////////////////////
