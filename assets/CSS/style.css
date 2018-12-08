@@ -37,7 +37,7 @@ h3 {
     background-image: url(../images/field.jpg)
 }
 
-button {
+.btn-primary {
     font-size: 23px;
     text-align: center;
     cursor: pointer;
@@ -51,15 +51,15 @@ button {
 
  
 
-  button:hover {background-color: red;}
+  .btn-primary:hover {background-color: red;}
 
-  button:active {
+  .btn-primary:active {
     background-color: #3e8e41;
     box-shadow: 0 5px #666;
     transform: translateY(4px);
   }
 
-  button:focus {
+  .btn-primary:focus {
     outline: none;
 }
 
