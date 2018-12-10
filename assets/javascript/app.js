@@ -1,13 +1,15 @@
 $(document).ready(function () {
-    let moods = ['sad', 'angry', 'fanciful', 'excited', 'cheerful', 'spooky', 'suspenseful', 'thoughtful', 'curious'];
 
+    //Programatically generate buttons based on each mood:
+    let moods = ['sad', 'angry', 'fanciful', 'excited', 'cheerful', 'spooky', 'suspenseful', 'thoughtful', 'curious'];
     for (let mood of moods) {
         $('.mood-buttons').append($('<button>').text(mood).attr({ 'data-mood': mood, 'class': 'btn btn-primary mood-button' }));
     }
 
-    //getRandom is a utility function 
+    //getRandom is a utility function that returns a random element from an array:
     const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
+    //searchTerms translates moods into IGDB search terms:
     function searchTerms(mood) {
         switch (mood) {
             case 'sad':
@@ -60,8 +62,7 @@ $(document).ready(function () {
         }
     }
 
-    const gameKey = 'f28275b8fb7b306cbb42f124b2e94066';
-
+    //The Game object stores relevant game information pulled from IGDB:
     class Game {
         constructor(title, summary, platformIds, cover, videoIds) {
             this.title = title;
@@ -70,6 +71,8 @@ $(document).ready(function () {
             this.platformIds = platformIds;
             this.videoIds = videoIds;
         }
+        //Platforms are pulled as a seperate API query based on stored IDs.
+        //The getter returns an array of platform names:
         get platforms() {
             let gameQueryUrl = 'https://api-2445582011268.apicast.io/platforms/';
             for (const id of this.platformIds) {
@@ -85,27 +88,49 @@ $(document).ready(function () {
                 }
             }).then(response => response.data.map(datum => datum.name));
         }
+        //IGDB gives us YouTube video IDs, the videos getter returns a JQuery element to display the YouTube video:
         get videos() {
-            return this.videoIds.map(id => $('<iframe>').attr({
-                'width': 560,
-                'height': 315,
-                'src' : `https://www.youtube.com/embed/${id.video_id}`,
-                'allow' : 'autoplay; encrypted-media',
-                'allowfullscreen' : true
-            }));
+            if (this.videoIds.length > 0) {
+                return this.videoIds.map(id => $('<iframe>').attr({
+                    'width': 560,
+                    'height': 315,
+                    'src': `https://www.youtube.com/embed/${id.video_id}`,
+                    'allow': 'autoplay; encrypted-media',
+                    'allowfullscreen': true
+                }));
+            }
+            else {
+                return '';
+            }
         }
-
+        //makeHtml returns a div for displaying the Game's properties:
+        makeHtml() {
+            const gameDiv = $('<div>');
+            gameDiv.append(
+                $("<h4>").text("Title: " + this.title),
+                $("<img>").attr("src", this.cover),
+                $("<p>").text("Summary: " + this.summary),
+                this.videos[0]
+            );
+            return gameDiv;
+        }
     }
 
+    const gameKey = 'f28275b8fb7b306cbb42f124b2e94066';
+
+    //Game data is pulled from IGDB and returned as a promise:
     function getGamePromise(mood, property) {
         const moodTerms = searchTerms(mood);
         let gameQueryUrl = 'https://api-2445582011268.apicast.io/games/?limit=20&fields=name,summary,platforms,cover,videos' +
             `&order=popularity:desc&filter[rating][gt]=90&filter[first_release_date][gt]=2005-01-01&filter[${property}][any]=`;
         const propIds = property === 'genres' ? moodTerms.genreIds : moodTerms.themeIds;
+        //Each property is added to the query url:
         propIds.forEach(id => {
             gameQueryUrl += id + ',';
         });
+        //The final , is trimmed off the url:
         gameQueryUrl = gameQueryUrl.substring(0, gameQueryUrl.length - 1);
+        //An axios GET querry is sent indirectly via CORSbridge to bypass CORS blocking:
         const gameSafeUrl = 'https://corsbridge2.herokuapp.com/' + encodeURIComponent(gameQueryUrl);
         return axios.get(gameSafeUrl, {
             headers: {
@@ -113,55 +138,42 @@ $(document).ready(function () {
                 'Accept': 'application/json'
             }
         }).then(response => response.data.map(
+            //The promise contains an array of Game objects:
             datum => new Game(datum.name, datum.summary, datum.platforms, datum.cover, datum.videos)
         ));
 
     }
 
-    $('.mood-buttons').on('click', '.mood-button', function () {
+    $('.mood-buttons, #game-buttons').on('click', '.mood-button', function () {
+        $('#game-buttons').removeClass('hidden');
         const mood = $(this).attr('data-mood');
+        $('#new-game-button, #music-button').attr('data-mood', mood);
         const property = searchTerms(mood).hasOwnProperty('themeIds') ? 'themes' : 'genres';
         getGamePromise(mood, property).then(result => {
             //result arrives as an array of 20 Game objects.
-            console.log(result);
-            let game = getRandom(result); 
+            const game = getRandom(result);
+            console.log(game);
             //CODE FOR DISPLAYING RESULTS GOES HERE:
-            const gameTitle = game.title;
-            const title = $("<h4>").text("Title: " + gameTitle);
-          
-            const gameCover = game.cover;
-            console.log(game)
-            const cover = $("<img>").attr("src", gameCover);
-            
-            const gameSummary = game.summary;
-            const summary = $("<p>").text("Summary: " + gameSummary);
-                        
-            const gameVideo = game.videoIds;
-            const video = $("<iframe>").attr("src", gameVideo);
-           
-            $("#game-results").prepend(title, cover, summary,video);
-
-
+            const $gameHtml = game.makeHtml();
             ////////////////////////////////////////
             game.platforms.then(platforms => {
-                console.log(platforms);
                 //CODE SPECIFICALLY FOR DISPLAYING PLATFORMS GOES HERE:
-                
-                
+                $gameHtml.append($('<h4>').text('Platforms:'));
+                let $platformList = $('<ul>');
+                for (const platform of platforms) {
+                    $platformList.append($('<li>').text(platform));
+                }
+                $gameHtml.append($platformList);
+                $('#game-results').prepend($gameHtml);
                 //////////////////////////////////////////////////////
             });
         });
-        getMusicPromise(mood).then(result => {
-            console.log(result);
-            //CODE FOR DISPLAYING TRACKS GOES HERE:
 
-            
-            ///////////////////////////////////////
-        });
     });
 
     const musicKey = 'a3e040df3cd2213704ea57b5d25c8714';
 
+    //The Track object stores relevant game information pulled from the LastFM API:
     class Track {
         constructor(title, artist, cover, link) {
             this.title = title;
@@ -169,16 +181,36 @@ $(document).ready(function () {
             this.cover = cover;
             this.link = link;
         }
+        //makeHtml returns a div for displaying the Track's properties:
+        makeHtml() {
+            let $trackDiv = $('<div>');
+            $trackDiv.append(
+                $('<h4>').text(this.title),
+                $('<p>').text(this.artist),
+                $('<img>').attr('src', this.cover),
+                $('<p>').html($('<a>').attr('href', this.link).text('Check it out!'))
+            );
+            return $trackDiv;
+        }
     }
 
+    //Track data is pulled from the LastFM API and returned as a promise:
     function getMusicPromise(mood) {
         const musicQueryUrl = `http://ws.audioscrobbler.com/2.0/?method=tag.gettoptracks&tag=${mood}&api_key=${musicKey}&format=json`
         const musicSafeUrl = 'https://corsbridge.herokuapp.com/' + encodeURIComponent(musicQueryUrl);
         return track = axios.get(musicSafeUrl).then(response => response.data.tracks.track.map(
+            //The promise contains an array of Track objects:
             track => new Track(track.name, track.artist.name, track.image[2]['#text'], track.url)
         ));
     }
 
-    getMusicPromise('angry');
-
+    $('#music-button').on('click', function () {
+        const mood = $(this).attr('data-mood');
+        getMusicPromise(mood).then(result => {
+            //CODE FOR DISPLAYING TRACKS GOES HERE:
+            const track = getRandom(result);
+            $('#music-results').prepend(track.makeHtml());
+            ///////////////////////////////////////
+        });
+    });
 });
