@@ -6,7 +6,7 @@ body {
 button {
    margin-left: 30px;
    margin-top: 20px;
-   width: 25%;
+   
 }
 
 h2 {
@@ -49,8 +49,6 @@ h3 {
     box-shadow: 0 9px #999;
   }
 
- 
-
   .btn-primary:hover {background-color: red;}
 
   .btn-primary:active {
@@ -63,6 +61,6 @@ h3 {
     outline: none;
 }
 
-   
- 
-  
+.hidden {
+    display: none;
+}
