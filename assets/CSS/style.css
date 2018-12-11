@@ -68,13 +68,25 @@ button {
 }
 
 /* App Generated Content Styles **********************/
-.game-box {
+.game-box, .track-box {
     background: rgba(255, 255, 255, 0.4);
     padding: 15px 20px;
     border-radius: 10px;
     margin-bottom: 30px;
 }
-.game-box img {
+.game-box img, .track-box {
     float: left;
     margin-right: 20px;
+}
+.track-box {
+    width: 40%;
+}
+.track-box img {
+    width: 90%;
+}
+#game-buttons {
+    text-align: center;
+}
+#services {
+    padding: 50px;
 }
