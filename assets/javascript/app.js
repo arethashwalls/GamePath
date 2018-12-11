@@ -69,7 +69,8 @@ $(document).ready(function () {
             this.summary = summary;
             this.cover = `https://images.igdb.com/igdb/image/upload/t_cover_big/${cover.cloudinary_id}.jpg`;
             this.platformIds = platformIds;
-            this.videoIds = videoIds;
+            //If videoIds is undefined, short-circuit to an empty array.
+            this.videoIds = videoIds || [];
         }
         //Platforms are pulled as a seperate API query based on stored IDs.
         //The getter returns an array of platform names:
@@ -105,7 +106,7 @@ $(document).ready(function () {
         }
         //makeHtml returns a div for displaying the Game's properties:
         makeHtml() {
-            const gameDiv = $('<div>');
+            const gameDiv = $('<div>').addClass('game-box');
             gameDiv.append(
                 $("<h4>").text("Title: " + this.title),
                 $("<img>").attr("src", this.cover),
@@ -183,7 +184,7 @@ $(document).ready(function () {
         }
         //makeHtml returns a div for displaying the Track's properties:
         makeHtml() {
-            let $trackDiv = $('<div>');
+            let $trackDiv = $('<div>').addClass('track-box');
             $trackDiv.append(
                 $('<h4>').text(this.title),
                 $('<p>').text(this.artist),
