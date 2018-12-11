@@ -1,42 +1,49 @@
+/* Global Styles ****************************************/
 body {
     padding: 0;
     margin: 0;
 }
-
-button {
-   margin-left: 30px;
-   margin-top: 20px;
-   
+.hidden {
+    display: none;
 }
 
+/* Title Styles *****************************************/
+h1, h2, h3 {
+    font-family: 'Press Start 2P', cursive;
+}
 h2 {
     color: dodgerblue;
 }
-
 h3 {
     color:  #ffc107;
     margin-top: -30px;
 }
-
 .title {
     background-image: url(../images/forrest.jpg);
     color: white
 }
 
+/* Section-Specific Styles ******************************/
 #about {
     border-top: solid black 1px;
     border-bottom: solid black 1px;
 }
-
 #contact {
     border-bottom: solid black 1px;
 
 }
-
 #services {
-    background-image: url(../images/field.jpg)
+    background-image: url(../images/field.jpg);
+    height: 600px;
+    overflow-y: scroll;
 }
 
+/* Button Styles ***************************************/
+button {
+    margin-left: 30px;
+    margin-top: 20px;
+    
+ }
 .btn-primary {
     font-size: 23px;
     text-align: center;
@@ -48,19 +55,26 @@ h3 {
     border-radius: 10px;
     box-shadow: 0 9px #999;
   }
-
-  .btn-primary:hover {background-color: red;}
-
-  .btn-primary:active {
+.btn-primary:hover {
+    background-color: red;
+}
+.btn-primary:active {
     background-color: #3e8e41;
     box-shadow: 0 5px #666;
     transform: translateY(4px);
-  }
-
-  .btn-primary:focus {
+}
+.btn-primary:focus {
     outline: none;
 }
 
-.hidden {
-    display: none;
+/* App Generated Content Styles **********************/
+.game-box {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+.game-box img {
+    float: left;
+    margin-right: 20px;
 }
