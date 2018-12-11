@@ -1,9 +1,15 @@
 $(document).ready(function () {
-
-    //Programatically generate buttons based on each mood:
+    //moods lists all possible moods:
     let moods = ['sad', 'angry', 'fanciful', 'excited', 'cheerful', 'spooky', 'suspenseful', 'thoughtful', 'curious'];
+
+    //allData will hold all previously fetched API data to avoid repeating calls:
+    let allData = {};
+
     for (let mood of moods) {
+        //Programatically generate buttons based on each mood:
         $('.mood-buttons').append($('<button>').text(mood).attr({ 'data-mood': mood, 'class': 'btn btn-primary mood-button' }));
+        //Add a property to allData for each mood:
+        allData[mood] = { games: [], tracks: [] };
     }
 
     //getRandom is a utility function that returns a random element from an array:
@@ -81,7 +87,7 @@ $(document).ready(function () {
             }
             gameQueryUrl = gameQueryUrl.substring(0, gameQueryUrl.length - 1);
             gameQueryUrl += '?fields=name';
-            const gameSafeUrl = 'https://corsbridge2.herokuapp.com/' + encodeURIComponent(gameQueryUrl);
+            const gameSafeUrl = `https://corsbridge2.herokuapp.com/${encodeURIComponent(gameQueryUrl)}`;
             return axios.get(gameSafeUrl, {
                 headers: {
                     'user-key': gameKey,
@@ -106,7 +112,7 @@ $(document).ready(function () {
         }
         //makeHtml returns a div for displaying the Game's properties:
         makeHtml() {
-            const gameDiv = $('<div>').addClass('game-box');
+            let gameDiv = $('<div>').addClass('game-box');
             gameDiv.append(
                 $("<h4>").text("Title: " + this.title),
                 $("<img>").attr("src", this.cover),
@@ -117,10 +123,21 @@ $(document).ready(function () {
         }
     }
 
+    //makePlatformHtml handles the creation of the platform list:
+    makePlatformHtml = (platforms) => {
+        let $platformDiv = $('<div>').append($('<h4>').text('Platforms:'));
+        let $platformList = $('<ul>');
+        for (const platform of platforms) {
+            $platformList.append($('<li>').text(platform));
+        }
+        $platformDiv.append($platformList);
+        return $platformDiv;
+    }
+
     const gameKey = 'f28275b8fb7b306cbb42f124b2e94066';
 
     //Game data is pulled from IGDB and returned as a promise:
-    function getGamePromise(mood, property) {
+    getGamePromise = (mood, property) => {
         const moodTerms = searchTerms(mood);
         let gameQueryUrl = 'https://api-2445582011268.apicast.io/games/?limit=20&fields=name,summary,platforms,cover,videos' +
             `&order=popularity:desc&filter[rating][gt]=90&filter[first_release_date][gt]=2005-01-01&filter[${property}][any]=`;
@@ -149,27 +166,35 @@ $(document).ready(function () {
         $('#game-buttons').removeClass('hidden');
         const mood = $(this).attr('data-mood');
         $('#new-game-button, #music-button').attr('data-mood', mood);
-        const property = searchTerms(mood).hasOwnProperty('themeIds') ? 'themes' : 'genres';
-        getGamePromise(mood, property).then(result => {
-            //result arrives as an array of 20 Game objects.
-            const game = getRandom(result);
-            console.log(game);
-            //CODE FOR DISPLAYING RESULTS GOES HERE:
+        if (allData[mood].games.length == 0) {
+            console.log('calling')
+            const property = searchTerms(mood).hasOwnProperty('themeIds') ? 'themes' : 'genres';
+            getGamePromise(mood, property).then(result => {
+                //result arrives as an array of 20 Game objects.
+                const game = getRandom(result);
+                //CODE FOR DISPLAYING RESULTS GOES HERE:
+                const $gameHtml = game.makeHtml();
+                allData[mood].games = result.filter(item => item.title !== game.title);
+                $gameHtml.append(game.makePlatformHtml)
+                ////////////////////////////////////////
+                game.platforms.then(platforms => {
+                    //CODE SPECIFICALLY FOR DISPLAYING PLATFORMS GOES HERE:
+                    $gameHtml.append(makePlatformHtml(platforms));
+                    $('#game-results').prepend($gameHtml);
+                    //////////////////////////////////////////////////////
+                });
+            });
+        } else {
+            console.log('not calling')
+            const game = getRandom(allData[mood].games);
             const $gameHtml = game.makeHtml();
-            ////////////////////////////////////////
             game.platforms.then(platforms => {
                 //CODE SPECIFICALLY FOR DISPLAYING PLATFORMS GOES HERE:
-                $gameHtml.append($('<h4>').text('Platforms:'));
-                let $platformList = $('<ul>');
-                for (const platform of platforms) {
-                    $platformList.append($('<li>').text(platform));
-                }
-                $gameHtml.append($platformList);
+                $gameHtml.append(makePlatformHtml(platforms));
                 $('#game-results').prepend($gameHtml);
                 //////////////////////////////////////////////////////
             });
-        });
-
+        }
     });
 
     const musicKey = 'a3e040df3cd2213704ea57b5d25c8714';
@@ -207,11 +232,18 @@ $(document).ready(function () {
 
     $('#music-button').on('click', function () {
         const mood = $(this).attr('data-mood');
-        getMusicPromise(mood).then(result => {
-            //CODE FOR DISPLAYING TRACKS GOES HERE:
-            const track = getRandom(result);
+        if(allData[mood].tracks.length === 0) {
+            getMusicPromise(mood).then(result => {
+                //CODE FOR DISPLAYING TRACKS GOES HERE:
+                const track = getRandom(result);
+                allData[mood].tracks = result.filter(item => item.title !== track.title);
+                $('#music-results').prepend(track.makeHtml());
+                ///////////////////////////////////////
+            });
+        } else {
+            const track = getRandom(allData[mood].tracks);
             $('#music-results').prepend(track.makeHtml());
-            ///////////////////////////////////////
-        });
+        }
+        
     });
 });
