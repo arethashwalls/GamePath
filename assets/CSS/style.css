@@ -1,68 +1,140 @@
+/* Global Styles ****************************************/
 body {
     padding: 0;
     margin: 0;
 }
-
-button {
-   margin-left: 30px;
-   margin-top: 20px;
-   width: 25%;
+.hidden {
+    display: none;
 }
 
+/* Title Styles *****************************************/
+a, h1, h2, h3, h4 {
+    font-family: 'Press Start 2P', cursive;
+}
+h1 {
+    color: #ffc107;
+}
 h2 {
     color: dodgerblue;
+    margin-top: 20px;
 }
-
 h3 {
-    color:  #ffc107;
-    margin-top: -30px;
+    color:  #3e8e41;
+    line-height: 2rem;
 }
-
+h4 {
+    color: #ffc107;
+    text-align: center;
+    font-size: 18px;
+}
 .title {
     background-image: url(../images/forrest.jpg);
     color: white
 }
+.navbar #gamepath-brand {
+    width: 30px;
+    height: auto;
+}
 
+a {
+    font-size: 13px;
+}
+
+footer {
+    border-top: solid 2px #3333ff;
+}
+
+
+
+/* Section-Specific Styles ******************************/
 #about {
     border-top: solid black 1px;
     border-bottom: solid black 1px;
+    background-color: lightgray;
 }
-
 #contact {
     border-bottom: solid black 1px;
+    background-color: #333333;
+    height: 0%;
 
 }
-
-#services {
-    background-image: url(../images/field.jpg)
+#display-games {
+    background-image: url(../images/field.jpg);
+    height: 600px;
+    overflow-y: scroll;
+    padding: 50px;
+}
+#gamepath-brand {
+    width: 64px;
+    height: auto;
 }
 
+.columnOne {
+    float: left;
+    width: 15%;
+  }
+  
+  .columnTwo {
+    float: left;
+    width: 85%;
+    margin-top: 25px;
+  }
+  
+
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+
+/* Button Styles ***************************************/
 button {
+    margin-left: 30px;
+    margin-top: 20px;
+    
+ }
+.btn-primary {
     font-size: 23px;
     text-align: center;
     cursor: pointer;
     outline: none;
     color: #fff;
-    background-color: #77b300;
+    background-color: #b32400;
     border: none;
     border-radius: 10px;
     box-shadow: 0 9px #999;
   }
-
- 
-
-  button:hover {background-color: red;}
-
-  button:active {
+.btn-primary:hover {
+    background-color: red;
+}
+.btn-primary:active {
     background-color: #3e8e41;
     box-shadow: 0 5px #666;
     transform: translateY(4px);
-  }
-
-  button:focus {
+}
+.btn-primary:focus {
     outline: none;
 }
+#game-buttons {
+    text-align: center;
+}
 
-   
- 
-  
+/* App Generated Content Styles **********************/
+.game-box, .track-box {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+.game-box img {
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+.track-box {
+    width: 40%;
+}
+.track-box img {
+    width: 90%;
+}
