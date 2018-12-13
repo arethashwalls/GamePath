@@ -8,15 +8,24 @@ body {
 }
 
 /* Title Styles *****************************************/
-h1, h2, h3 {
+a, h1, h2, h3, h4 {
     font-family: 'Press Start 2P', cursive;
+}
+h1 {
+    color: #ffc107;
 }
 h2 {
     color: dodgerblue;
+    margin-top: 20px;
 }
 h3 {
-    color:  #ffc107;
+    color:  #3e8e41;
     line-height: 2rem;
+}
+h4 {
+    color: #ffc107;
+    text-align: center;
+    font-size: 18px;
 }
 .title {
     background-image: url(../images/forrest.jpg);
@@ -27,13 +36,26 @@ h3 {
     height: auto;
 }
 
+a {
+    font-size: 13px;
+}
+
+footer {
+    border-top: solid 2px #3333ff;
+}
+
+
+
 /* Section-Specific Styles ******************************/
 #about {
     border-top: solid black 1px;
     border-bottom: solid black 1px;
+    background-color: lightgray;
 }
 #contact {
     border-bottom: solid black 1px;
+    background-color: #333333;
+    height: 0%;
 
 }
 #display-games {
@@ -47,6 +69,25 @@ h3 {
     height: auto;
 }
 
+.columnOne {
+    float: left;
+    width: 15%;
+  }
+  
+  .columnTwo {
+    float: left;
+    width: 85%;
+    margin-top: 25px;
+  }
+  
+
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+
 /* Button Styles ***************************************/
 button {
     margin-left: 30px;
@@ -59,7 +100,7 @@ button {
     cursor: pointer;
     outline: none;
     color: #fff;
-    background-color: #77b300;
+    background-color: #b32400;
     border: none;
     border-radius: 10px;
     box-shadow: 0 9px #999;
