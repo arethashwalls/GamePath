@@ -13,13 +13,13 @@
     <link rel='shortcut icon' type='image/x-icon' href='assets/images/controller-icon.ico' />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
         crossorigin="anonymous">
-    <link href="../GroupProject1/background-assets/css/scrolling-nav.css" rel="stylesheet">
+    <link href="../GamePath/background-assets/css/scrolling-nav.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-    <link rel="stylesheet" href="assets/CSS/style.css">
+    <link rel="stylesheet" href="../GamePath/assets/CSS/style.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="../GroupProject1/assets/javascript/app.js"></script>
+    <script src="../GamePath/assets/javascript/app.js"></script>
 </head>
 
 <body id="page-top">
@@ -35,19 +35,7 @@
                 aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger text-warning" href="#about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger text-danger" href="#display-games">Find a Game</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link js-scroll-trigger text-primary" href="#contact">Contact</a>
-                    </li>
-                </ul>
-            </div>
+        </div>
         </div>
     </nav>
 
@@ -60,8 +48,7 @@
             </div>
             <div class="row">
                 <div class="col-8 mx-auto">
-                    <p class="lead">Are you bored with your current video games? Are you clueless about what game you
-                        want to purchase or play? Well, do I have the tool for you!</p>
+                    <p class="lead">Follow your GamePath and see where it takes you!</p>
                 </div>
             </div>
         </div>
@@ -71,13 +58,14 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-10 mx-auto text-dark">
-                    <h2>What mood are you in? <img src="assets/images/gamepath.png" id="gamepath-brand" class="float-right" /></h2>
-                    <p class="lead">Choose a button that matches your mood and get back a game recommendation that is
-                        similar to the mood you chose!</p>
-                    <div class="mood-buttons">
+                    <img src="assets/images/gamepath.png" id="gamepath-brand" class="float-right" />
+                    <h2>What mood are you in?</h2>
+                    <p class="lead">Clicking on a mood button gets you a game recommendation matching the mood you chose! If you don't
+                        like the suggestion then click the "get me a diffrent game" button and we will give you another suggestion from that mood button!
+                        Once you're satisfied with the results then click the tunes button and well give you a song suggestion to listen to while you game!
+                        <div class="mood-buttons">
 
-                    </div>
-
+                        </div>
                 </div>
             </div>
         </div>
@@ -104,26 +92,22 @@
         </div>
     </section>
 
-    <section id="contact">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-10 mx-auto text-dark">
-                    <h2>Find us on GitHub!<img src="assets/images/GitHub-Mark-64px.png" class="float-right" /></h2>
-                    <p class="lead">
-                        <a href="https://github.com/arethashwalls" target="_blank">Aretha Walls </a> |
-                        <a href="https://github.com/MarcoAOrtiz" target="_blank">Marco Ortiz</a> |
-                        <a href="https://github.com/felsuna" target="_blank">Felicia Sunanto</a> |
-                        <a href="https://github.com/CarminaGarcia97" target="_blank">Carmina Garcia</a>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Footer -->
     <footer class="py-2 bg-dark">
         <div class="container">
-            <p class="m-0 text-center text-white">GamePath</p>
+            <div class="row">
+                <div class="columnOne">
+                    <img src="./assets/images/GitHub-Mark-64px.png">
+                </div>
+                <div class="columnTwo">
+                    <a>GitHub:</a>
+                    <a href="https://github.com/arethashwalls" target="_blank">Aretha S.H Walls </a> |
+                    <a href="https://github.com/MarcoAOrtiz" target="_blank">Marco Ortiz</a> |
+                    <a href="https://github.com/felsuna" target="_blank">Felicia Sunanto</a> |
+                    <a href="https://github.com/CarminaGarcia97" target="_blank">Carmina Garcia</a>
+                </div>
+            </div>
         </div>
     </footer>
 
